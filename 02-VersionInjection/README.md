@@ -5,29 +5,43 @@ An example for ESP32 firmware injection mechanism OTAdrive
 
 ## Prerequests
 
-This example is part of [OTA drive](http://www.otadrive.com) tutorials, you should follow previeus sections to understand what we explain here.
+This example is part of [OTA drive](https://www.otadrive.com) tutorials, you should follow previeus sections to understand what we explain here.
 
 ## Problem
 
-While you upload your firmware on [OTA drive](http://www.otadrive.com) you face with following warning about your bin file.
+While you upload your firmware on [OTA drive](https://www.otadrive.com) you face with following warning about your bin file.
 
 ![Version Injection Mechanism Warning](/doc/vi-warning1.png)
 
-## Features
+## How to inject version
 
-* Full list of your devices
-* Grouping devices and control versioning of each device group separately
-* Monitor device activities
-* Monitor device upgrades
-* Block unwanted devices to access OTA
-* Json configuration for device
+OTAdrive needs some data about your product and version in your bin file. The simplest way to do that is have a plain string in a fixed format in your bin file.
+As you know, in all native languages like (c,c++,etc.) compiler stores strings somewhere in executable output file.
+We use this point to inject our productkey and version into plain text in bin file. Just use following code:
 
-# Getting Started
+``` c
+// To inject firmware info into binary file, You have to use following macro according to let
+// OTAdrive to detect binary info automatically
+#define ProductKey "c0af643b-4f90-4905-9807-db8be5164cde" // Replace with your own APIkey
+#define Version "1.0.0.7" // Replace with your own Version number
+#define MakeFirmwareInfo(k, v) "&_FirmwareInfo&k=" k "&v=" v "&FirmwareInfo_&"
+.
+.
+.
+void update()
+{
+  String url = "http://otadrive.com/deviceapi/update?";
+  url += MakeFirmwareInfo(ProductKey, Version);
+  url += "&s=" + getChipId();
 
-This project is a simple blinker test. You can upgrade this blinker easily via OTAdrive dashboard.
+  httpUpdate.setLedPin(2);
+  WiFiClient client;
+  httpUpdate.update(client, url, Version);
+}
+```
+After use this code in your project, you will see problem solved.
 
-![OTAdrive](/documents/img/esploop.jpg)
+![Version Injection Mechanism Warning](/doc/vi-success.png)
 
-## Toturial Video
-
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/hS_Z1wywtVE/0.jpg)](https://www.youtube.com/embed/hS_Z1wywtVE)
+## More info
+For more information please follow up tutorials in [OTA drive](https://www.otadrive.com)
