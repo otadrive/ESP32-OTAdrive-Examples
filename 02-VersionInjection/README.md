@@ -11,7 +11,7 @@ This example is part of [OTA drive](https://www.otadrive.com) tutorials, you sho
 
 While you upload your firmware on [OTA drive](https://www.otadrive.com) you face with following warning about your bin file.
 
-![Version Injection Mechanism Warning](/doc/vi-warning1.png)
+![Version Injection Mechanism Warning](doc/vi-warning1.png)
 
 ## How to inject version
 
@@ -41,7 +41,7 @@ void update()
 ```
 After use this code in your project, you will see problem solved.
 
-![Version Injection Mechanism Warning](/doc/vi-success.png)
+![Version Injection Mechanism Warning](doc/vi-success.png)
 
 ## More info
 For more information please follow up tutorials in [OTA drive](https://www.otadrive.com)
