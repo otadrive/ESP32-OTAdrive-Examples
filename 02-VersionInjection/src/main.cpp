@@ -12,7 +12,7 @@ void setup()
 {
   // put your setup code here, to run once:
   pinMode(2, OUTPUT);
-  WiFi.begin("guest", "GTXci7@@!q");
+  WiFi.begin("smarthomehub", "****");
 }
 
 uint32_t updateCounter = 0;
