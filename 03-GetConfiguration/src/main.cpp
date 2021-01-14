@@ -89,7 +89,7 @@ void updateConfigs()
 {
   WiFiClient client;
   HTTPClient http;
-  String url = "http://192.168.1.15/deviceapi/getconfig?";
+  String url = "http://www.otadrive.com/deviceapi/getconfig?";
   url += MakeFirmwareInfo(ProductKey, Version);
   url += "&s=" + getChipId();
 
