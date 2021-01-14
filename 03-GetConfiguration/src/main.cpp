@@ -92,6 +92,9 @@ void updateConfigs()
   String url = "http://www.otadrive.com/deviceapi/getconfig?";
   url += MakeFirmwareInfo(ProductKey, Version);
   url += "&s=" + getChipId();
+  client.setTimeout(1);
+  http.setConnectTimeout(1000);
+  http.setTimeout(1000);
 
   Serial.println(url);
 
