@@ -22,7 +22,7 @@ void setup()
 {
   // put your setup code here, to run once:
   pinMode(2, OUTPUT);
-  WiFi.begin("smarthomehub", "****");
+  WiFi.begin("smarthomehub", "smarthome2015");
 
   EEPROM.begin(32);
   loadConfigs();
@@ -39,11 +39,12 @@ void loop()
   delay(onDelay);
   digitalWrite(2, 0);
   delay(offDelay);
+  Serial.printf("blink: %d\n", updateCounter);
 
   if (WiFi.status() == WL_CONNECTED)
   {
     updateCounter++;
-    if (updateCounter > 20)
+    if (updateCounter > 5)
     {
       updateCounter = 0;
       update();
@@ -101,7 +102,7 @@ void updateConfigs()
   if (http.begin(client, url))
   {
     int httpCode = http.GET();
-    Serial.printf("http code: %d", httpCode);
+    Serial.printf("http code: %d\n", httpCode);
 
     // httpCode will be negative on error
     if (httpCode == HTTP_CODE_OK)
@@ -110,7 +111,7 @@ void updateConfigs()
       DynamicJsonDocument doc(512);
       deserializeJson(doc, payload);
 
-      Serial.printf("http content: %s", payload.c_str());
+      Serial.printf("http content: %s\n", payload.c_str());
 
       if (doc.containsKey("onDelay") &&
           doc.containsKey("offDelay"))
