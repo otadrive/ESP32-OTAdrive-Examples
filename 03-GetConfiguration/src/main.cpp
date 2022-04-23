@@ -2,6 +2,7 @@
 #include <HTTPUpdate.h>
 #include <ArduinoJson.h>
 #include <EEPROM.h>
+#include <otadrive_esp.h>
 
 // configuration variables
 int onDelay;
@@ -20,9 +21,10 @@ void loadConfigs();
 
 void setup()
 {
+  OTADRIVE.setInfo(ProductKey, Version);
   // put your setup code here, to run once:
   pinMode(2, OUTPUT);
-  WiFi.begin("smarthomehub", "smarthome2015");
+  WiFi.begin("Awin", "Saat@110");
 
   EEPROM.begin(32);
   loadConfigs();
@@ -30,25 +32,22 @@ void setup()
   Serial.begin(115200);
 }
 
-uint32_t updateCounter = 0;
-
 void loop()
 {
   // put your main code here, to run repeatedly:
   digitalWrite(2, 1);
-  delay(onDelay);
+  delay(onDelay + 20);
   digitalWrite(2, 0);
-  delay(offDelay);
-  Serial.printf("blink: %d\n", updateCounter);
+  delay(offDelay + 20);
+  Serial.printf("blink\n");
 
   if (WiFi.status() == WL_CONNECTED)
   {
-    updateCounter++;
-    if (updateCounter > 5)
+    if (OTADRIVE.timeTick(15))
     {
-      updateCounter = 0;
       update();
       updateConfigs();
+
     }
   }
 }
@@ -88,49 +87,23 @@ void loadConfigs()
 
 void updateConfigs()
 {
-  WiFiClient client;
-  HTTPClient http;
-  String url = "http://www.otadrive.com/deviceapi/getconfig?";
-  url += MakeFirmwareInfo(ProductKey, Version);
-  url += "&s=" + getChipId();
-  client.setTimeout(1);
-  http.setConnectTimeout(1000);
-  http.setTimeout(1000);
+  String payload = OTADRIVE.getConfigs();
+  DynamicJsonDocument doc(512);
+  deserializeJson(doc, payload);
 
-  Serial.println(url);
+  Serial.printf("http content: %s\n", payload.c_str());
 
-  if (http.begin(client, url))
+  if (doc.containsKey("onDelay") &&
+      doc.containsKey("offDelay"))
   {
-    int httpCode = http.GET();
-    Serial.printf("http code: %d\n", httpCode);
-
-    // httpCode will be negative on error
-    if (httpCode == HTTP_CODE_OK)
-    {
-      String payload = http.getString();
-      DynamicJsonDocument doc(512);
-      deserializeJson(doc, payload);
-
-      Serial.printf("http content: %s\n", payload.c_str());
-
-      if (doc.containsKey("onDelay") &&
-          doc.containsKey("offDelay"))
-      {
-        onDelay = doc["onDelay"].as<int>();
-        offDelay = doc["offDelay"].as<int>();
-        saveConfigs();
-      }
-    }
+    onDelay = doc["onDelay"].as<int>();
+    offDelay = doc["offDelay"].as<int>();
+    saveConfigs();
   }
 }
 
 void update()
 {
-  String url = "http://otadrive.com/deviceapi/update?";
-  url += MakeFirmwareInfo(ProductKey, Version);
-  url += "&s=" + getChipId();
-
-  httpUpdate.setLedPin(2);
-  WiFiClient client;
-  httpUpdate.update(client, url, Version);
+  auto r = OTADRIVE.updateFirmware();
+  Serial.printf("Update result is: %s\n", r.toString().c_str());
 }

@@ -43,11 +43,8 @@ void setup()
 
 void sync_task()
 {
-  static int sync_timer = 0;
-  sync_timer++;
-  if (sync_timer < 10)
+  if (!OTADRIVE.timeTick(30))
     return;
-  sync_timer = 0;
 
   if (WiFi.status() != WL_CONNECTED)
     return;
