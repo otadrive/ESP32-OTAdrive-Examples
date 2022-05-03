@@ -1,15 +1,13 @@
 #include <Arduino.h>
-#include <HTTPUpdate.h>
+#include <otadrive_esp.h>
 
-void update();
 void setup()
 {
   // put your setup code here, to run once:
   pinMode(2, OUTPUT);
-  WiFi.begin("smarthomehub", "*****");
+  OTADRIVE.setInfo("c0af643b-4f90-4905-9807-db8be5164cde", "1.0.0.1");
+  WiFi.begin("OTAdrive", "@tadr!ve");
 }
-
-uint32_t updateCounter = 0;
 
 void loop()
 {
@@ -21,29 +19,9 @@ void loop()
 
   if (WiFi.status() == WL_CONNECTED)
   {
-    updateCounter++;
-    if (updateCounter > 20)
+    if (OTADRIVE.timeTick(10))
     {
-      updateCounter = 0;
-      update();
+      OTADRIVE.updateFirmware();
     }
   }
-}
-
-String getChipId()
-{
-  String ChipIdHex = String((uint32_t)(ESP.getEfuseMac() >> 32), HEX);
-  ChipIdHex += String((uint32_t)ESP.getEfuseMac(), HEX);
-  return ChipIdHex;
-}
-
-void update()
-{
-  String url = "http://otadrive.com/deviceapi/update?";
-  url += "k=c0af643b-4f90-4905-9807-db8be5164cde";
-  url += "&v=1.0.0.1";
-  url += "&s=" + getChipId();
-
-  WiFiClient client;
-  httpUpdate.update(client, url, "1.0.0.1");
 }

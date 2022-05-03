@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <HTTPUpdate.h>
 #include <ArduinoJson.h>
 #include <EEPROM.h>
 #include <otadrive_esp.h>
@@ -12,7 +11,6 @@ int offDelay;
 // OTAdrive to detect binary info automatically
 #define ProductKey "c0af643b-4f90-4905-9807-db8be5164cde" // Replace with your own APIkey
 #define Version "1.0.0.7"
-#define MakeFirmwareInfo(k, v) "&_FirmwareInfo&k=" k "&v=" v "&FirmwareInfo_&"
 
 void update();
 void updateConfigs();
@@ -24,7 +22,7 @@ void setup()
   OTADRIVE.setInfo(ProductKey, Version);
   // put your setup code here, to run once:
   pinMode(2, OUTPUT);
-  WiFi.begin("Awin", "Saat@110");
+  WiFi.begin("OTAdrive", "@tadr!ve");
 
   EEPROM.begin(32);
   loadConfigs();
@@ -50,13 +48,6 @@ void loop()
 
     }
   }
-}
-
-String getChipId()
-{
-  String ChipIdHex = String((uint32_t)(ESP.getEfuseMac() >> 32), HEX);
-  ChipIdHex += String((uint32_t)ESP.getEfuseMac(), HEX);
-  return ChipIdHex;
 }
 
 void saveConfigs()

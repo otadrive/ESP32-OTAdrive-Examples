@@ -1,8 +1,6 @@
 #include <Arduino.h>
 #include <otadrive_esp.h>
 
-otadrive_ota OTADRIVE;
-
 void update();
 void setup()
 {
@@ -90,8 +88,8 @@ void loop()
   delay(1000);
   if (WiFi.status() == WL_CONNECTED)
   {
-    updateCounter++;
-    if (updateCounter > 5)
+    // every 10 seconds
+    if (OTADRIVE.timeTick(10))
     {
       digitalWrite(2, HIGH);
       delay(100);
@@ -103,9 +101,9 @@ void loop()
       updateInfo inf = OTADRIVE.updateFirmwareInfo();
       Serial.printf("\nfirmware info: %s ,%dBytes\n%s\n",
                     inf.version.c_str(), inf.size, inf.available ? "New version available" : "You are already update");
-      //OTADRIVE.syncResources();
-      //listDir(fileObj, "/", 0);
-      //OTADRIVE.updateFirmware();
+      OTADRIVE.syncResources();
+      listDir(fileObj, "/", 0);
+      OTADRIVE.updateFirmware();
     }
   }
 }

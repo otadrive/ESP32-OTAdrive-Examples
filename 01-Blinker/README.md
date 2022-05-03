@@ -9,8 +9,6 @@ There are many companies that produce products based on hardwares such as ESP32/
 
 [OTA drive](http://www.otadrive.com) is here to help solve this problem. Today we support ESP32/ESP8266 and you can upgrade your ESP32/ESP8266 based product without any server developing.
 
-![OTAdrive](/documents/img/loop.jpg)
-
 ## Features
 
 * Full list of your devices
@@ -28,4 +26,4 @@ This project is a simple blinker test. You can upgrade this blinker easily via O
 
 ## Toturial Video
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/hS_Z1wywtVE/0.jpg)](https://www.youtube.com/embed/hS_Z1wywtVE)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jBeAmVS7wtI/0.jpg)](https://youtu.be/jBeAmVS7wtI)
