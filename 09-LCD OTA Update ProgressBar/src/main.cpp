@@ -66,7 +66,7 @@ void OnProgress(int progress, int total)
   if (percent != last_percent)
   {
     lcd.setCursor(0, 1);
-    for (uint8_t i = 0; i < percent; i++)
+    for (uint8_t i = 0; i < percent; i+=6)
       lcd.print("*");
     lcd.setCursor(7, 1);
     lcd.printf("%d%%", percent);
