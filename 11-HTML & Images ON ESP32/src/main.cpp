@@ -61,21 +61,16 @@ void server_get_home(AsyncWebServerRequest *request)
   request->send(SPIFFS, "/static_html/index.html", "text/html");
 }
 
-void server_post_home(AsyncWebServerRequest *request)
-{
-  process_cmd(request);
-}
-
 void setup_server()
 {
 #ifdef ESP32
-  server.addHandler(new SPIFFSEditor(OTA_FILE_SYS));
+  server.addHandler(new SPIFFSEditor(SPIFFS));
 #elif defined(ESP8266)
   server.addHandler(new SPIFFSEditor());
 #endif
 
   server.on("/", HTTP_GET, server_get_home);
-  server.serveStatic("/", OTA_FILE_SYS, "/static_html/").setDefaultFile("index.html");
+  server.serveStatic("/", SPIFFS, "/static_html/").setDefaultFile("index.html");
   server.onNotFound(notFound);
 
   server.begin();
@@ -109,6 +104,6 @@ void setup()
 
 void loop()
 {
-  if (OTADRIVE.timeTick(30))
+  if (OTADRIVE.timeTick(60))
     OTADRIVE.syncResources();
 }
