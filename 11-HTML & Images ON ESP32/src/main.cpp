@@ -9,6 +9,7 @@
 #include <ESPAsyncTCP.h>
 #endif
 #include <ESPAsyncWebServer.h>
+#include <SPIFFSEditor.h>
 
 #define LED_W 4
 #define LED_B 16
@@ -24,13 +25,6 @@ AsyncWebServer server(80);
 const char *ssid = "OTAdrive";
 const char *password = "@tadr!ve";
 const char *PARAM_CMD = "cmd";
-const char *HOME_HTML = "<html><body style='width:250px'>"
-                        "<div style='background-color:GREEN'> <a href='/?cmd=on_g'>LED GREEN ON</a> </div>"
-                        "<div style='background-color:DARKGREEN'> <a href='/?cmd=off_g'>LED GREEN OFF</a> </div>"
-                        "<br/>"
-                        "<div style='background-color:RED'> <a href='/?cmd=on_r'>LED RED ON</a> </div>"
-                        "<div style='background-color:DARKRED'> <a href='/?cmd=off_r'>LED RED OFF</a> </div>"
-                        "</body></html>";
 
 void notFound(AsyncWebServerRequest *request)
 {
@@ -39,6 +33,7 @@ void notFound(AsyncWebServerRequest *request)
 
 bool process_cmd(AsyncWebServerRequest *request)
 {
+  Serial.printf("%s\n", request->url().c_str());
   String command;
   if (request->hasArg(PARAM_CMD))
   {
@@ -62,35 +57,25 @@ bool process_cmd(AsyncWebServerRequest *request)
 
 void server_get_home(AsyncWebServerRequest *request)
 {
-  if (process_cmd(request))
-    request->send(200, "text/html", HOME_HTML);
-  else
-    request->send(200, "text/html", HOME_HTML);
+  process_cmd(request);
+  request->send(SPIFFS, "/static_html/index.html", "text/html");
 }
 
 void server_post_home(AsyncWebServerRequest *request)
 {
   process_cmd(request);
-  request->send(200, "text/plain", HOME_HTML);
 }
 
 void setup_server()
 {
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  if (WiFi.waitForConnectResult() != WL_CONNECTED)
-  {
-    Serial.printf("WiFi Failed!\n");
-    return;
-  }
-
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
+#ifdef ESP32
+  server.addHandler(new SPIFFSEditor(OTA_FILE_SYS));
+#elif defined(ESP8266)
+  server.addHandler(new SPIFFSEditor());
+#endif
 
   server.on("/", HTTP_GET, server_get_home);
-
-  server.on("/", HTTP_POST, server_post_home);
-
+  server.serveStatic("/", OTA_FILE_SYS, "/static_html/").setDefaultFile("index.html");
   server.onNotFound(notFound);
 
   server.begin();
@@ -104,9 +89,26 @@ void setup()
   for (int i = 0; i < 5; i++)
     pinMode(leds[i], OUTPUT);
 
+  // Setup WiFi
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  if (WiFi.waitForConnectResult() != WL_CONNECTED)
+  {
+    Serial.printf("WiFi Failed!\n");
+    return;
+  }
+
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+
   setup_server();
+
+  SPIFFS.begin(true);
+  OTADRIVE.setInfo("bd076abe-a423-4880-85b3-4367d07c8eda", "1.0.0");
 }
 
 void loop()
 {
+  if (OTADRIVE.timeTick(30))
+    OTADRIVE.syncResources();
 }
