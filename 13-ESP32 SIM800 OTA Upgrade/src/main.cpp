@@ -37,7 +37,7 @@ void setup()
 
 void loop()
 {
-  if (!OTADRIVE.timeTick(60))
+  if (!OTADRIVE.timeTick(30))
   {
     delay(3000);
     return;
@@ -61,7 +61,8 @@ void loop()
         // auto c = OTADRIVE.getConfigs(gsm_otadrive_client);
         // Serial.printf("config %s\n", c.c_str());
 
-        OTADRIVE.updateFirmware(gsm_otadrive_client);
+        // OTADRIVE.updateFirmware(gsm_otadrive_client);
+        OTADRIVE.sendAlive(gsm_otadrive_client);
       }
     }
   }
