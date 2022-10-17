@@ -23,25 +23,24 @@ TinyGsmClient gsm_otadrive_client(modem, 1);
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("Download a new firmware from SIM800");
-
-  // setup LED's
-  for (int i = 0; i < 5; i++)
-    pinMode(leds[i], OUTPUT);
 
   // Setup WiFi
   // We dont need Wi-Fi here
 
   SPIFFS.begin(true);
-  OTADRIVE.setInfo("YOUR_PRODUCT_APIKEY", "YOUR_FIRMWARE_VERSION");
+  OTADRIVE.setInfo("bd076abe-a423-4880-85b3-4367d07c8eda", "2.0.1");
+
+  Serial.printf("Download a new firmware from SIM800, V=%s\n", OTADRIVE.Version.c_str());
 
   // do something about power-on GSM
 }
 
 void loop()
 {
-  if (OTADRIVE.timeTick(60))
+  if (!OTADRIVE.timeTick(60))
   {
+    delay(3000);
+    return;
   }
 
   if (modem.testAT(100))
@@ -56,8 +55,13 @@ void loop()
 
       if (modem.isGprsConnected())
       {
-        OTAdrive::GsmHTTPUpdate gsmHttpUpdate;
-        gsmHttpUpdate.update(gsm_otadrive_client, "otadrive.com/deviceapi/update?k=bd076abe-a423-4880-85b3-4367d07c8eda&s=11&v=1.0.0");
+        // auto a = OTADRIVE.updateFirmwareInfo(gsm_otadrive_client);
+        // Serial.printf("info: %d, %d, %s\n", a.available, a.size, a.version.c_str());
+
+        // auto c = OTADRIVE.getConfigs(gsm_otadrive_client);
+        // Serial.printf("config %s\n", c.c_str());
+
+        OTADRIVE.updateFirmware(gsm_otadrive_client);
       }
     }
   }
