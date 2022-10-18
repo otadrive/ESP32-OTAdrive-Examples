@@ -1,6 +1,5 @@
 #include <otadrive_esp.h>
 #include <Arduino.h>
-#include <gsmHTTPUpdate.h>
 #include <TinyGsmClient.h>
 
 #define LED_W 4
@@ -43,26 +42,29 @@ void loop()
     return;
   }
 
-  if (modem.testAT(100))
+  for (uint8_t tr = 0; tr < 3; tr++)
   {
-    if (modem.getSimStatus(100) == SimStatus::SIM_READY)
+    if (modem.testAT(100))
     {
-      if (!modem.isGprsConnected())
+      if (modem.getSimStatus(100) == SimStatus::SIM_READY)
       {
-        // set your APN info here
-        modem.gprsConnect("mcinet", "", "");
-      }
+        if (!modem.isGprsConnected())
+        {
+          // set your APN info here
+          modem.gprsConnect("mcinet", "", "");
+        }
 
-      if (modem.isGprsConnected())
-      {
-        // auto a = OTADRIVE.updateFirmwareInfo(gsm_otadrive_client);
-        // Serial.printf("info: %d, %d, %s\n", a.available, a.size, a.version.c_str());
+        if (modem.isGprsConnected())
+        {
+          // auto a = OTADRIVE.updateFirmwareInfo(gsm_otadrive_client);
+          // Serial.printf("info: %d, %d, %s\n", a.available, a.size, a.version.c_str());
 
-        // auto c = OTADRIVE.getConfigs(gsm_otadrive_client);
-        // Serial.printf("config %s\n", c.c_str());
+          // auto c = OTADRIVE.getConfigs(gsm_otadrive_client);
+          // Serial.printf("config %s\n", c.c_str());
 
-        // OTADRIVE.updateFirmware(gsm_otadrive_client);
-        OTADRIVE.sendAlive(gsm_otadrive_client);
+          OTADRIVE.updateFirmware(gsm_otadrive_client);
+          // OTADRIVE.sendAlive(gsm_otadrive_client);
+        }
       }
     }
   }

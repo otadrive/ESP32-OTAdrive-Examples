@@ -2,6 +2,10 @@
     "files.associations": {
         "system_error": "cpp",
         "regex": "cpp",
-        "*.tpp": "cpp"
+        "*.tpp": "cpp",
+        "array": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "utility": "cpp"
     }
 }
