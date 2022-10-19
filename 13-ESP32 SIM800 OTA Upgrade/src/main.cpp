@@ -19,6 +19,11 @@ TinyGsmClient gsm_mqtt_client(modem, 0);
 // MuxChannel 1 for OTA
 TinyGsmClient gsm_otadrive_client(modem, 1);
 
+void update_prgs(size_t i, size_t total)
+{
+  Serial.printf("upgrade %d/%d   %d%%\n", i, total, ((i * 100) / total));
+}
+
 void setup()
 {
   Serial.begin(115200);
@@ -28,6 +33,7 @@ void setup()
 
   SPIFFS.begin(true);
   OTADRIVE.setInfo("bd076abe-a423-4880-85b3-4367d07c8eda", "2.0.1");
+  OTADRIVE.onUpdateFirmwareProgress(update_prgs);
 
   Serial.printf("Download a new firmware from SIM800, V=%s\n", OTADRIVE.Version.c_str());
 
@@ -58,12 +64,11 @@ void loop()
         {
           // auto a = OTADRIVE.updateFirmwareInfo(gsm_otadrive_client);
           // Serial.printf("info: %d, %d, %s\n", a.available, a.size, a.version.c_str());
-
           // auto c = OTADRIVE.getConfigs(gsm_otadrive_client);
           // Serial.printf("config %s\n", c.c_str());
+          // OTADRIVE.sendAlive(gsm_otadrive_client);
 
           OTADRIVE.updateFirmware(gsm_otadrive_client);
-          // OTADRIVE.sendAlive(gsm_otadrive_client);
         }
       }
     }
