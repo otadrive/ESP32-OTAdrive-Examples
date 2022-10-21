@@ -2,17 +2,6 @@
 #include <Arduino.h>
 #include <TinyGsmClient.h>
 
-#define LED_W 4
-#define LED_B 16
-#define LED_G 17
-#define LED_Y 18
-#define LED_R 19
-#define BTN1 13
-#define BTN2 12
-const int leds[] = {LED_W, LED_B, LED_G, LED_Y, LED_R};
-
-const char *ssid = "OTAdrive";
-const char *password = "@tadr!ve";
 TinyGsm modem(Serial);
 // MuxChannel 0 for MQTT
 TinyGsmClient gsm_mqtt_client(modem, 0);
