@@ -10,7 +10,7 @@ int offDelay;
 // To inject firmware info into binary file, You have to use following macro according to let
 // OTAdrive to detect binary info automatically
 #define ProductKey "c0af643b-4f90-4905-9807-db8be5164cde" // Replace with your own APIkey
-#define Version "1.0.0.7"
+#define Version "v@1.0.0.7"
 #define MakeFirmwareInfo(k, v) "&_FirmwareInfo&k=" k "&v=" v "&FirmwareInfo_&"
 
 // OTAdrive.com CA certificate

@@ -83,7 +83,7 @@ void setup()
   setup_server();
 
   SPIFFS.begin(true);
-  OTADRIVE.setInfo("YOUR_PRODUCT_APIKEY", "YOUR_FIRMWARE_VERSION");
+  OTADRIVE.setInfo("YOUR_PRODUCT_APIKEY", "v@1.1.12");
 }
 
 void loop()

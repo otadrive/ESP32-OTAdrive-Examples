@@ -16,7 +16,7 @@ configs local_configs;
 
 void setup()
 {
-  OTADRIVE.setInfo("08ef4e5f-f062-40bb-b21d-fd7f13124609", "1.0.0");
+  OTADRIVE.setInfo("08ef4e5f-f062-40bb-b21d-fd7f13124609", "v@1.0.0");
   Serial.begin(115200);
   EEPROM.begin(512);
   EEPROM.get(0, local_configs);

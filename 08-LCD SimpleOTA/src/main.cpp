@@ -14,7 +14,7 @@ LiquidCrystal lcd(pin_RS, pin_EN, pin_d4, pin_d5, pin_d6, pin_d7);
 
 void setup()
 {
-  OTADRIVE.setInfo("888ac717-12f0-4da2-807a-c55bb70d1386", "1.0.3");
+  OTADRIVE.setInfo("888ac717-12f0-4da2-807a-c55bb70d1386", "v@1.0.3");
 
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);

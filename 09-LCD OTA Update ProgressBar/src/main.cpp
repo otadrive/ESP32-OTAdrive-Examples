@@ -15,7 +15,7 @@ void OnProgress(int progress, int total);
 
 void setup()
 {
-  OTADRIVE.setInfo("888ac717-12f0-4da2-807a-c55bb70d1386", "1.0.5");
+  OTADRIVE.setInfo("888ac717-12f0-4da2-807a-c55bb70d1386", "v@1.0.5");
   OTADRIVE.onUpdateFirmwareProgress(OnProgress);
 
   lcd.begin(16, 2);

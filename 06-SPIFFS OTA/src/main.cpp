@@ -38,7 +38,7 @@ void setup()
 #endif
 
   //
-  OTADRIVE.setInfo("1c70ece5-07b2-4ee3-9ee3-9b9f566dfb2e", "2.5.5");
+  OTADRIVE.setInfo("1c70ece5-07b2-4ee3-9ee3-9b9f566dfb2e", "v@2.5.5");
 }
 
 uint32_t updateCounter = 0;

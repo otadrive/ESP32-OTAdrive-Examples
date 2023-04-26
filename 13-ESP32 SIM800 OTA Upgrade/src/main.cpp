@@ -21,7 +21,7 @@ void setup()
   // We dont need Wi-Fi here
 
   SPIFFS.begin(true);
-  OTADRIVE.setInfo("YOUR_APIKEY", "YOUR_FIRMWARE_VERSION");
+  OTADRIVE.setInfo("YOUR_APIKEY", "v@1.1.1");
   OTADRIVE.onUpdateFirmwareProgress(update_prgs);
 
   Serial.printf("Download a new firmware from SIM800, V=%s\n", OTADRIVE.Version.c_str());

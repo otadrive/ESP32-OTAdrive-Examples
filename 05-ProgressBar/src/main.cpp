@@ -4,7 +4,7 @@
 // To inject firmware info into binary file, You have to use following macro according to let
 // OTAdrive to detect binary info automatically
 #define ProductKey "c0af643b-4f90-4905-9807-db8be5164cde" // Replace with your own APIkey
-#define Version "1.0.0.6"
+#define Version "v@1.0.0.6"
 
 void update();
 void OnProgress(int progress, int totalt);

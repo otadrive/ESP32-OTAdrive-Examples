@@ -5,7 +5,7 @@ void setup()
 {
   // put your setup code here, to run once:
   pinMode(2, OUTPUT);
-  OTADRIVE.setInfo("c0af643b-4f90-4905-9807-db8be5164cde", "1.0.0.1");
+  OTADRIVE.setInfo("c0af643b-4f90-4905-9807-db8be5164cde", "v@1.0.0.1");
   WiFi.begin("OTAdrive", "@tadr!ve");
 }
 
