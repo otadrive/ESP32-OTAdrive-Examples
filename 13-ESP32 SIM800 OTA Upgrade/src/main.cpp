@@ -21,45 +21,60 @@ void setup()
   // We dont need Wi-Fi here
 
   SPIFFS.begin(true);
-  OTADRIVE.setInfo("YOUR_APIKEY", "v@1.1.1");
+  OTADRIVE.setInfo("YOUR_APIKEY", "v@YOUR_FIRMWARE_VERSION");
   OTADRIVE.onUpdateFirmwareProgress(update_prgs);
 
-  Serial.printf("Download a new firmware from SIM800, V=%s\n", OTADRIVE.Version.c_str());
+  Serial.printf("Download a new firmware from SIM800,Chip:%s V=%s\n", OTADRIVE.getChipId().c_str(), OTADRIVE.Version.c_str());
 
   // do something about power-on GSM
 }
 
 void loop()
 {
-  if (!OTADRIVE.timeTick(30))
+  for (uint8_t tr = 0; tr < 5; tr++)
   {
     delay(3000);
-    return;
+    if (!modem.testAT(100))
+    {
+      Serial.println("Testing modem RX/TX test faild");
+      continue;
+    }
+
+    if (modem.getSimStatus(100) != SimStatus::SIM_READY)
+    {
+      Serial.println("Testing modem SIMCARD faild");
+      continue;
+    }
+    if (!modem.isGprsConnected())
+    {
+      Serial.println("Testing modem internet faild. Try to connect ...");
+      modem.gprsConnect("simbase", "", "");
+      continue;
+    }
+
+    Serial.println("Modem is ready");
   }
 
-  for (uint8_t tr = 0; tr < 3; tr++)
+  if (OTADRIVE.timeTick(30))
   {
-    if (modem.testAT(100))
+    Serial.println("Lets updaete the firmware");
+    if (modem.isGprsConnected())
     {
-      if (modem.getSimStatus(100) == SimStatus::SIM_READY)
-      {
-        if (!modem.isGprsConnected())
-        {
-          // set your APN info here
-          modem.gprsConnect("mcinet", "", "");
-        }
-
-        if (modem.isGprsConnected())
-        {
-          // auto a = OTADRIVE.updateFirmwareInfo(gsm_otadrive_client);
-          // Serial.printf("info: %d, %d, %s\n", a.available, a.size, a.version.c_str());
-          // auto c = OTADRIVE.getConfigs(gsm_otadrive_client);
-          // Serial.printf("config %s\n", c.c_str());
-          // OTADRIVE.sendAlive(gsm_otadrive_client);
-
-          OTADRIVE.updateFirmware(gsm_otadrive_client);
-        }
-      }
+      // auto a = OTADRIVE.updateFirmwareInfo(gsm_otadrive_client);
+      // Serial.printf("info: %d, %d, %s\n", a.available, a.size, a.version.c_str());
+      // auto c = OTADRIVE.getConfigs(gsm_otadrive_client);
+      // Serial.printf("config %s\n", c.c_str());
+      // OTADRIVE.sendAlive(gsm_otadrive_client);
+      Serial.printf("isGprsConnected");
+      OTADRIVE.updateFirmware(gsm_otadrive_client);
     }
+    else
+    {
+      Serial.println("Modem is not ready");
+    }
+  }
+  else
+  {
+    Serial.println("Waiting");
   }
 }
