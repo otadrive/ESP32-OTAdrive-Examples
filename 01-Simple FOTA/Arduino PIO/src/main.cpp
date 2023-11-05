@@ -1,14 +1,13 @@
 #include <Arduino.h>
 #include <otadrive_esp.h>
 
-// Important Notice: Please enable log outputs. Tools->Core Debug Level->Debug
-
 #define APIKEY "COPY_APIKEY_HERE" // OTAdrive APIkey for this product
 #define FW_VER "v@x.x.x" // this app version
 #define LED 2
 #define WIFI_SSID "OTAdrive2"
 #define WIFI_PASS "@tadr!ve"
 
+// put function declarations here:
 void onUpdateProgress(int progress, int totalt);
 
 void setup() {
@@ -33,7 +32,6 @@ void setup() {
 
 void loop() {
   log_i("Loop: Application version %s", FW_VER);
-  
   if (WiFi.status() == WL_CONNECTED) {
     // Every 30 seconds
     if (OTADRIVE.timeTick(30)) {
@@ -49,6 +47,7 @@ void loop() {
   delay(5000);
 }
 
+// put function definitions here:
 void onUpdateProgress(int progress, int totalt) {
   static int last = 0;
   int progressPercent = (100 * progress) / totalt;
