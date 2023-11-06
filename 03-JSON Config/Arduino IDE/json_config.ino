@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <otadrive_esp.h>
+#include <ArduinoJson.h>
 
-// Important Notice: Please enable log outputs. Tools->Core Debug Level->Debug
 
 #define APIKEY "COPY_APIKEY_HERE" // OTAdrive APIkey for this product
 #define FW_VER "v@x.x.x" // this app version
@@ -10,7 +10,6 @@
 #define WIFI_PASS "@tadr!ve"
 
 // put function declarations here:
-OTAdrive_ns::KeyValueList configs;
 int speed = 50;
 
 void setup()
@@ -45,10 +44,12 @@ void loop()
     if (OTADRIVE.timeTick(30))
     {
       // get latest config
-      configs = OTADRIVE.getConfigValues();
-      if (configs.containsKey("speed"))
+      String payload = OTADRIVE.getJsonConfigs();
+      DynamicJsonDocument doc(512);
+      deserializeJson(doc, payload);
+      if (doc.containsKey("speed"))
       {
-        speed = configs.value("speed").toInt();
+        speed = doc["speed"].as<int>();
       }
 
       // We don't talk about FOTA here. So code removed
@@ -56,4 +57,3 @@ void loop()
   }
   delay(5000);
 }
-
