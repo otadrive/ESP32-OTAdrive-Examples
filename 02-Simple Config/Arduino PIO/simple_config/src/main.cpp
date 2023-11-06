@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <otadrive_esp.h>
 
-#define APIKEY "bd076abe-a423-4880-85b3-4367d07c8eda" //"COPY_APIKEY_HERE" // OTAdrive APIkey for this product
-#define FW_VER "v@2.3.5"                              //"v@x.x.x" // this app version
+#define APIKEY "COPY_APIKEY_HERE" // OTAdrive APIkey for this product
+#define FW_VER "v@x.x.x" // this app version
 #define LED 2
 #define WIFI_SSID "SOHA"      //"OTAdrive2"
 #define WIFI_PASS "SohaTos@n" //"@tadr!ve"
