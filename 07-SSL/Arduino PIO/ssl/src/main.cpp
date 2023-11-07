@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include <otadrive_esp.h>
 
-#define APIKEY "bd076abe-a423-4880-85b3-4367d07c8eda"//"COPY_APIKEY_HERE" // OTAdrive APIkey for this product
-#define FW_VER "v@1.2.3"          // this app version
+#define APIKEY "bd076abe-a423-4880-85b3-4367d07c8eda" //"COPY_APIKEY_HERE" // OTAdrive APIkey for this product
+#define FW_VER "v@1.2.3"                              // this app version
 #define LED 2
-#define WIFI_SSID "OTAdrive2"
+#define WIFI_SSID "OTAdrive"
 #define WIFI_PASS "@tadr!ve"
 
 // put function declarations here:
@@ -52,7 +52,12 @@ void loop()
         speed = configs.value("speed").toInt();
       }
 
-      // We don't talk about FOTA here. So code removed
+      auto inf = OTADRIVE.updateFirmwareInfo(client);
+      if (inf.available)
+      {
+        // You may need do something befor update
+        OTADRIVE.updateFirmware(client);
+      }
     }
   }
   delay(5000);
