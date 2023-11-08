@@ -10,7 +10,7 @@
 #define APIKEY "bd076abe-a423-4880-85b3-4367d07c8eda" //"COPY_APIKEY_HERE" // OTAdrive APIkey for this product
 #define FW_VER "v@1.2.3"                              // this app version
 #define LED 2
-#define WIFI_SSID "OTAdrive"
+#define WIFI_SSID "OTAdrive2"
 #define WIFI_PASS "@tadr!ve"
 
 // put function declarations here:
@@ -55,8 +55,10 @@ void loop()
     certs.append(otadrv_ca);
     char buf[500];
     buf[0] = '\0';
-CertStore store;
-
+    //client.setInsecure();
+    client.setTrustAnchors(&certs);
+    
+    
     // BA49C09D128076176AEBD53CA3BC3438F03815DF
     // if (client.setFingerprint("07E032E020B72C3F192F0628A2593A19A70F069E"))
     // otd_log_i("fingerprint accept");
