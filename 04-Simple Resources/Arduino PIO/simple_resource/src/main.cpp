@@ -5,12 +5,11 @@
 #define APIKEY "bd076abe-a423-4880-85b3-4367d07c8eda"//"COPY_APIKEY_HERE" // OTAdrive APIkey for this product
 #define FW_VER "v@1.2.3"          // this app version
 #define LED 2
-#define WIFI_SSID "OTAdrive2"
+#define WIFI_SSID "OTAdrive"
 #define WIFI_PASS "@tadr!ve"
 
 // put function declarations here:
-OTAdrive_ns::KeyValueList configs;
-int speed = 50;
+void listDir(fs::FS &fs, const char *dirname, uint8_t levels);
 
 void setup()
 {
@@ -33,27 +32,73 @@ void setup()
 
   log_i("WiFi connected %s", WiFi.localIP().toString().c_str());
   OTADRIVE.setInfo(APIKEY, FW_VER);
+
+  // Initialize file system and set the OTAdrive library file handler
+  if (!SPIFFS.begin(true))
+  {
+    Serial.println("SPIFFS Mount Failed");
+    return;
+  }
+  OTADRIVE.setFileSystem(&SPIFFS);
 }
 
 void loop()
 {
   otd_log_i("Loop: Version %s, Serial: %s", FW_VER, OTADRIVE.getChipId().c_str());
-  log_i("config parameter [speed]=%d", speed);
 
   if (WiFi.status() == WL_CONNECTED)
   {
     // Every 30 seconds
     if (OTADRIVE.timeTick(30))
     {
-      // get latest config
-      configs = OTADRIVE.getConfigValues();
-      if (configs.containsKey("speed"))
-      {
-        speed = configs.value("speed").toInt();
-      }
+      // download new files (and rewrite modified files) from the OTAdrive
+      OTADRIVE.syncResources();
 
-      // We don't talk about FOTA here. So code removed
+      // print the list of local files
+      listDir(SPIFFS, "/", 0);
+
+      // You can do something about config and FOTA (Firmware OTA) here
     }
   }
   delay(5000);
+}
+
+void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
+{
+  Serial.printf("Listing directory: %s\r\n", dirname);
+
+  File root = fs.open(dirname, "r");
+  if (!root)
+  {
+    Serial.println("- failed to open directory");
+    return;
+  }
+  if (!root.isDirectory())
+  {
+    Serial.println(" - not a directory");
+    return;
+  }
+
+  File file = root.openNextFile();
+  while (file)
+  {
+    if (file.isDirectory())
+    {
+      Serial.print("  DIR : ");
+      Serial.println(file.name());
+      if (levels)
+      {
+        listDir(fs, file.name(), levels - 1);
+      }
+    }
+    else
+    {
+      Serial.print("  FILE: ");
+      Serial.print(file.path());
+      Serial.print("\t    SIZE: ");
+      Serial.print(file.size());
+      Serial.println(" Bytes");
+    }
+    file = root.openNextFile();
+  }
 }
