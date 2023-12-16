@@ -141,8 +141,7 @@ void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
   {
     if (file.isDirectory())
     {
-      Serial.print("  DIR : ");
-      Serial.println(file.name());
+      Serial.printf("  DIR : %s\n", file.name());
       if (levels)
       {
         listDir(fs, file.name(), levels - 1);
@@ -150,11 +149,7 @@ void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
     }
     else
     {
-      Serial.print("  FILE: ");
-      Serial.print(file.path());
-      Serial.print("\t    SIZE: ");
-      Serial.print(file.size());
-      Serial.println(" Bytes");
+      Serial.printf("  FILE: %s\t    SIZE: %d Bytes\n", file.path(), file.size());
     }
     file = root.openNextFile();
   }
