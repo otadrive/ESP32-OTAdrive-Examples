@@ -70,6 +70,7 @@ void start_lcd()
 void setup()
 {
   start_lcd();
+  OTADRIVE.timeTick(30);
   delay(2500);
   Serial.begin(115200);
 
@@ -98,9 +99,9 @@ void loop()
 
   if (WiFi.status() == WL_CONNECTED)
   {
-    // Every 30 seconds
+    // Every 180 seconds
     if (OTADRIVE.timeTick(30))
-    { 
+    {
       // You can do something about config and FOTA (Firmware OTA) here
       auto inf = OTADRIVE.updateFirmwareInfo();
       if (inf.available)
@@ -115,7 +116,7 @@ void loop()
     }
   }
 
-  delay(200);
+  delay(1000);
 }
 
 void ota_proggress(size_t downloaded, size_t total)
