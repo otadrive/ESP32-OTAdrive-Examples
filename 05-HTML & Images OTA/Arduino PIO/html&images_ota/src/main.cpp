@@ -175,6 +175,16 @@ void loop()
       listDir(SPIFFS, "/", 0);
 
       // You can do something about config and FOTA (Firmware OTA) here
+	  /*auto inf = OTADRIVE.updateFirmwareInfo();
+      if (inf.available)
+      {
+        tft.fillScreen(TFT_BLACK);
+        tft.setTextSize(2);
+        tft.setCursor(0, 40);
+        tft.printf("UPDATING\nFrom %s\nTo %s", FW_VER, inf.version);
+
+        OTADRIVE.updateFirmware();
+      }*/
     }
   }
 
