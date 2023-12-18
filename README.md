@@ -8,6 +8,6 @@ The following examples you can find in this repository.
 | 4    | [Simple Resources](04-Simple%20Resources)       | How to download product resource files and save them to local storage (SPIFFS/LittleFS) |
 | 5    | [HTML & Images OTA](05-HTML%20&%20Images%20OTA) | An advanced HTML server with FOTA and resource features                                 |
 | 6    | [ProgressBar OTA](06-ProgressBar%20OTA)         | FOTA/OTA downloading progressbar on LCD (using TTGO/LILYGO board)                       |
-| 7    | [SSL](SSL)                                      | Show you how to use SSL over the OTAdrive library                                       |
+| 7    | [SSL](07-SSL)                                      | Show you how to use SSL over the OTAdrive library                                       |
 | 8    | [GSM Modem OTA](08-GSM%20Modem%20OTA)           | How to use external GSM module for OTA upgrade and other features                       |
 
