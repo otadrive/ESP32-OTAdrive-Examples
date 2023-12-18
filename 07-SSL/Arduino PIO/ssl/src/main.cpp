@@ -3,16 +3,16 @@
 #include <WiFiClientSecure.h>
 #include <wifi.h>
 
-
-#define APIKEY "COPY_APIKEY_HERE" // OTAdrive APIkey for this product
-#define FW_VER "v@1.2.3"          // this app version
+#define APIKEY "bd076abe-a423-4880-85b3-4367d07c8eda" // OTAdrive APIkey for this product
+#define FW_VER "v@11.2.3"                             // this app version
 #define LED 2
-#define WIFI_SSID "OTAdrive2"
+#define WIFI_SSID "OTAdrive"
 #define WIFI_PASS "@tadr!ve"
 
 // put function declarations here:
 OTAdrive_ns::KeyValueList configs;
 int speed = 50;
+bool checkPeer(WiFiClientSecure &ssl_client);
 
 void setup()
 {
@@ -43,30 +43,73 @@ void loop()
 {
   otd_log_i("Loop: Version %s, Serial: %s", FW_VER, OTADRIVE.getChipId().c_str());
   otd_log_i("config parameter [speed]=%d", speed);
+  delay(5000);
 
   if (WiFi.status() == WL_CONNECTED)
   {
     // Create a secure client and set the OTAdrive certificate to it
-    WiFiClientSecure client;
-    client.setCACert(otadrv_ca);
-    
+    WiFiClientSecure ssl_client;
+    ssl_client.setCACert(otadrv_ca);
+
+    // use this check if you really worry about attack and need most security
+    if (!checkPeer(ssl_client))
+      return;
+
     //  Every 30 seconds
-    if (OTADRIVE.timeTick(30))
+    if (OTADRIVE.timeTick(30) && 0)
     {
       // get latest config
-      configs = OTADRIVE.getConfigValues(client);
+      configs = OTADRIVE.getConfigValues(ssl_client);
       if (configs.containsKey("speed"))
       {
         speed = configs.value("speed").toInt();
       }
 
-      auto inf = OTADRIVE.updateFirmwareInfo(client);
+      auto inf = OTADRIVE.updateFirmwareInfo(ssl_client);
       if (inf.available)
       {
         // You may need do something befor update
-        OTADRIVE.updateFirmware(client);
+        OTADRIVE.updateFirmware(ssl_client);
       }
     }
   }
-  delay(5000);
+}
+
+bool checkPeer(WiFiClientSecure &ssl_client)
+{
+  // We should check that SSL certificate on the server is belongs to
+  // the "otadrive.com" or it may be an fake middle SSL.
+  // This make the connection procedure a bit slower
+  if (ssl_client.connect("otadrive.com", 443))
+  {
+    auto peer = ssl_client.getPeerCertificate();
+    if (peer == NULL)
+    {
+      log_e("Faild to get SSL peer");
+      return false;
+    }
+    
+    if (peer->subject.val.p == nullptr)
+    {
+      log_e("Faild to get correct SSL peer");
+      return false;
+    }
+
+    if (strncmp((char *)peer->subject.val.p, "*.otadrive.com", 14) == 0 ||
+        strncmp((char *)peer->subject.val.p, "otadrive.com", 12) == 0)
+    {
+      log_i("Certificate valid for otadrive.com");
+    }
+    else
+    {
+      log_e("Certificate is not valid %s", peer->subject.val.p);
+      return false;
+    }
+  }
+  else
+  {
+    log_e("Faild to connect SSL peer");
+    return false;
+  }
+  return true;
 }
