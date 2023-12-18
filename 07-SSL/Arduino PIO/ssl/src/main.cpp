@@ -27,9 +27,9 @@ void setup()
   while (WiFi.status() != WL_CONNECTED)
   {
     otd_log_i(".");
-    digitalWrite(2, HIGH);
+    digitalWrite(LED, HIGH);
     delay(100);
-    digitalWrite(2, LOW);
+    digitalWrite(LED, LOW);
     delay(400);
   }
 
@@ -88,7 +88,7 @@ bool checkPeer(WiFiClientSecure &ssl_client)
       log_e("Faild to get SSL peer");
       return false;
     }
-    
+
     if (peer->subject.val.p == nullptr)
     {
       log_e("Faild to get correct SSL peer");
