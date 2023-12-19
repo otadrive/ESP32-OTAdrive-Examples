@@ -42,12 +42,18 @@ void loop()
     if (OTADRIVE.timeTick(30))
     {
       // retrive firmware info from OTAdrive server
-      updateInfo inf = OTADRIVE.updateFirmwareInfo();
-      log_d("\nfirmware info: %s ,%dBytes\n%s\n",
-            inf.version.c_str(), inf.size, inf.available ? "New version available" : "No newer version");
+      auto inf = OTADRIVE.updateFirmwareInfo();
+
       // update firmware if newer available
       if (inf.available)
+      {
+        log_d("\nNew version available, %dBytes, %s\n", inf.size, inf.version.c_str());
         OTADRIVE.updateFirmware();
+      }
+      else
+      {
+        log_d("\nNo newer version\n");
+      }
     }
   }
   delay(5000);
