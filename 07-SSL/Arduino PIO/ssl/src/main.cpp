@@ -2,11 +2,14 @@
 #include <otadrive_esp.h>
 #include <WiFiClientSecure.h>
 #include <wifi.h>
+#include <WiFiClientSecure.h>
+#include <wifi.h>
+
 
 #define APIKEY "bd076abe-a423-4880-85b3-4367d07c8eda" // OTAdrive APIkey for this product
 #define FW_VER "v@11.2.3"                             // this app version
 #define LED 2
-#define WIFI_SSID "OTAdrive"
+#define WIFI_SSID "OTAdrive2"
 #define WIFI_PASS "@tadr!ve"
 
 // put function declarations here:
@@ -17,10 +20,13 @@ bool checkPeer(WiFiClientSecure &ssl_client);
 void setup()
 {
   delay(2500);
+  delay(2500);
   Serial.begin(115200);
   pinMode(LED, OUTPUT);
   otd_log_i("Start application. Version %s, Serial: %s", FW_VER, OTADRIVE.getChipId().c_str());
+  otd_log_i("Start application. Version %s, Serial: %s", FW_VER, OTADRIVE.getChipId().c_str());
 
+  otd_log_i("try connect wifi");
   otd_log_i("try connect wifi");
   WiFi.begin(WIFI_SSID, WIFI_PASS);
 
@@ -34,7 +40,9 @@ void setup()
   }
 
   otd_log_i("WiFi connected %s", WiFi.localIP().toString().c_str());
+  otd_log_i("WiFi connected %s", WiFi.localIP().toString().c_str());
   OTADRIVE.setInfo(APIKEY, FW_VER);
+  // enable SSL secure connection
   // enable SSL secure connection
   OTADRIVE.useSSL(true);
 }
