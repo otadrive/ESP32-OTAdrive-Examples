@@ -16,7 +16,7 @@ Please define the following configuration in your product and assign it to the g
 #include <ArduinoJson.h>
 #include <WiFi.h>
 
-#define APIKEY "bd076abe-a423-4880-85b3-4367d07c8eda" // OTAdrive APIkey for this product
+#define APIKEY "5ec34eab-c516-496d-8cb0-78dc4744af3b" // OTAdrive APIkey for this product
 #define FW_VER "v@21.3.5"                             // this app version
 #define LED 2
 #define WIFI_SSID "OTAdrive"

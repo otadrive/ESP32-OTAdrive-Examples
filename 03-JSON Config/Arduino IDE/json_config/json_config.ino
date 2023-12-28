@@ -1,28 +1,44 @@
+// Important Notice: Please enable log outputs. Tools->Core Debug Level->Debug
+
+/*
+Please define the following configuration in your product and assign it to the group of your device
+{
+    "speed":180,
+    "alarm":{
+        "number":"+188554436",
+        "msg1":"Fire, please help",
+        "msg2":"Emergency, please help"
+    }
+}
+*/
+
+
 #include <Arduino.h>
 #include <otadrive_esp.h>
+#include <ArduinoJson.h>
 #include <WiFi.h>
 
 #define APIKEY "5ec34eab-c516-496d-8cb0-78dc4744af3b" // OTAdrive APIkey for this product
-#define FW_VER "v@31.21.3"          // this app version
+#define FW_VER "v@21.3.5"                             // this app version
 #define LED 2
 #define WIFI_SSID "OTAdrive"
 #define WIFI_PASS "@tadr!ve"
 
 // put function declarations here:
-void listDir(fs::FS &fs, const char *dirname, uint8_t levels);
+int speed = 50;
+String alarm_num;
+String alarm_msg1;
 
 void printInfo()
 {
   log_i("Application version %s, Serial:%s, IP:%s", FW_VER, OTADRIVE.getChipId().c_str(), WiFi.localIP().toString().c_str());
 }
 
-
 void setup()
 {
-  delay(2500);
+  // Important Notice: Please enable log outputs. Tools->Core Debug Level->Debug
   Serial.begin(115200);
   pinMode(LED, OUTPUT);
-  otd_log_i("Start application. Version %s, Serial: %s", FW_VER, OTADRIVE.getChipId().c_str());
 
   log_i("try connect wifi");
   WiFi.begin(WIFI_SSID, WIFI_PASS);
@@ -38,30 +54,35 @@ void setup()
 
   log_i("WiFi connected %s", WiFi.localIP().toString().c_str());
   OTADRIVE.setInfo(APIKEY, FW_VER);
-
-  // Initialize file system and set the OTAdrive library file handler
-  if (!SPIFFS.begin(true))
-  {
-    log_e("SPIFFS Mount Failed");
-    return;
-  }
-  OTADRIVE.setFileSystem(&SPIFFS);
 }
 
 void loop()
 {
   printInfo();
+  log_i("config parameter [speed]=%d,alarm %s -> %s", speed, alarm_num.c_str(), alarm_msg1.c_str());
 
   if (WiFi.status() == WL_CONNECTED)
   {
     // Every 30 seconds
     if (OTADRIVE.timeTick(30))
     {
-      // download new files (and rewrite modified files) from the OTAdrive
-      OTADRIVE.syncResources();
+      // get latest config
+      String payload = OTADRIVE.getJsonConfigs();
+      DynamicJsonDocument doc(512);
+      deserializeJson(doc, payload);
 
-      // print the list of local files
-      listDir(SPIFFS, "/", 0);
+      // extract values
+      if (doc.containsKey("speed"))
+        speed = doc["speed"].as<int>();
+
+      if (doc.containsKey("alarm"))
+      {
+        if (doc["alarm"].containsKey("number"))
+          alarm_num = doc["alarm"]["number"].as<String>();
+
+        if (doc["alarm"].containsKey("msg1"))
+          alarm_msg1 = doc["alarm"]["msg1"].as<String>();
+      }
 
       // We don't talk about FOTA here. So code removed
       // // retrive firmware info from OTAdrive server
@@ -74,44 +95,4 @@ void loop()
     }
   }
   delay(5000);
-}
-
-void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
-{
-  Serial.printf("Listing directory: %s\r\n", dirname);
-
-  File root = fs.open(dirname, "r");
-  if (!root)
-  {
-    Serial.println("- failed to open directory");
-    return;
-  }
-  if (!root.isDirectory())
-  {
-    Serial.println(" - not a directory");
-    return;
-  }
-
-  File file = root.openNextFile();
-  while (file)
-  {
-    if (file.isDirectory())
-    {
-      Serial.print("  DIR : ");
-      Serial.println(file.name());
-      if (levels)
-      {
-        listDir(fs, file.name(), levels - 1);
-      }
-    }
-    else
-    {
-      Serial.print("  FILE: ");
-      Serial.print(file.path());
-      Serial.print("\t    SIZE: ");
-      Serial.print(file.size());
-      Serial.println(" Bytes");
-    }
-    file = root.openNextFile();
-  }
 }
