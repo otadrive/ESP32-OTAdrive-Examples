@@ -1,3 +1,5 @@
+// Important Notice: Please enable log outputs. Tools->Core Debug Level->Debug
+
 #include <Arduino.h>
 #include <otadrive_esp.h>
 #include <WiFi.h>
@@ -31,6 +33,7 @@ void printInfo()
 
 void setup()
 {
+  // Important Notice: Please enable log outputs. Tools->Core Debug Level->Debug
   Serial.begin(115200);
   pinMode(LED, OUTPUT);
 
