@@ -1,10 +1,21 @@
+// Important Notice: Please enable log outputs. Tools->Core Debug Level->Debug
+
 #include <otadrive_esp.h>
 #include <Arduino.h>
 #include <WiFi.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
 #include <SPIFFSEditor.h>
+// instal zip lib download from here https://otadrive.com/dwnl/TFT_eSPI.zip then go to (sketch->include libraty->add zip)
 #include <TFT_eSPI.h>
+
+// install lib: ottowinter/ESPAsyncWebServer-esphome
+#ifdef ESP32
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#elif defined(ESP8266)
+#include <ESP8266WiFi.h>
+#include <ESPAsyncTCP.h>
+#endif
+#include <ESPAsyncWebSrv.h>
 
 TFT_eSPI tft = TFT_eSPI();           // Create object "tft"
 TFT_eSprite img = TFT_eSprite(&tft); // Create Sprite object "img" with pointer to "tft" object
