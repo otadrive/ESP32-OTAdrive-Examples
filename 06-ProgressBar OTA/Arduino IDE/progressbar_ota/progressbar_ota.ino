@@ -1,6 +1,9 @@
+// Important Notice: Please enable log outputs. Tools->Core Debug Level->Debug
+
 #include <otadrive_esp.h>
 #include <Arduino.h>
 #include <WiFi.h>
+// instal zip lib download from here https://otadrive.com/dwnl/TFT_eSPI.zip then go to (sketch->include libraty->add zip)
 #include <TFT_eSPI.h>
 
 TFT_eSPI tft = TFT_eSPI();           // Create object "tft"
@@ -66,6 +69,7 @@ void start_lcd()
 
 void setup()
 {
+  // instal zip lib download from here https://otadrive.com/dwnl/TFT_eSPI.zip then go to (sketch->include libraty->add zip)
   start_lcd();
   OTADRIVE.timeTick(30);
   delay(2500);
