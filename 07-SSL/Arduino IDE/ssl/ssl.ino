@@ -4,7 +4,7 @@
 #include <wifi.h>
 
 
-#define APIKEY "bd076abe-a423-4880-85b3-4367d07c8eda"// "COPY_APIKEY_HERE" // OTAdrive APIkey for this product
+#define APIKEY "5ec34eab-c516-496d-8cb0-78dc4744af3b"// "COPY_APIKEY_HERE" // OTAdrive APIkey for this product
 #define FW_VER "v@1.2.3"          // this app version
 #define LED 2
 #define WIFI_SSID "OTAdrive2"

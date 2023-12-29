@@ -2,11 +2,9 @@
 #include <otadrive_esp.h>
 #include <WiFiClientSecure.h>
 #include <wifi.h>
-#include <WiFiClientSecure.h>
-#include <wifi.h>
 
 
-#define APIKEY "bd076abe-a423-4880-85b3-4367d07c8eda" // OTAdrive APIkey for this product
+#define APIKEY "5ec34eab-c516-496d-8cb0-78dc4744af3b" // OTAdrive APIkey for this product
 #define FW_VER "v@11.2.3"                             // this app version
 #define LED 2
 #define WIFI_SSID "OTAdrive2"
@@ -24,9 +22,7 @@ void setup()
   Serial.begin(115200);
   pinMode(LED, OUTPUT);
   otd_log_i("Start application. Version %s, Serial: %s", FW_VER, OTADRIVE.getChipId().c_str());
-  otd_log_i("Start application. Version %s, Serial: %s", FW_VER, OTADRIVE.getChipId().c_str());
 
-  otd_log_i("try connect wifi");
   otd_log_i("try connect wifi");
   WiFi.begin(WIFI_SSID, WIFI_PASS);
 
@@ -39,7 +35,6 @@ void setup()
     delay(400);
   }
 
-  otd_log_i("WiFi connected %s", WiFi.localIP().toString().c_str());
   otd_log_i("WiFi connected %s", WiFi.localIP().toString().c_str());
   OTADRIVE.setInfo(APIKEY, FW_VER);
   // enable SSL secure connection
