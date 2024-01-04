@@ -7,7 +7,7 @@
 #include <TFT_eSPI.h>
 
 #define APIKEY "5ec34eab-c516-496d-8cb0-78dc4744af3b" // OTAdrive APIkey for this product
-#define FW_VER "v@8.5.2"                             // this app version
+#define FW_VER "v@8.5.2"                              // this app version
 
 // GSM Modem Serial interface
 HardwareSerial mySerial(1);
@@ -23,6 +23,7 @@ TFT_eSPI tft = TFT_eSPI();           // Create object "tft"
 TFT_eSprite img = TFT_eSprite(&tft); // Create Sprite object "img" with pointer to "tft" object
 
 String gprs_ip;
+int gprs_signal = -1;
 int counter = 0;
 
 void printInfo()
@@ -35,7 +36,7 @@ void update_prgs(size_t downloaded, size_t total)
   // LCD Resolution: 135 x 240
   int percent = downloaded / (total / 100 + 1);
   Serial.printf("upgrade %d/%d  %d%%\r\n\r\n", downloaded, total, percent);
-  
+
   tft.setTextSize(2);
   tft.setCursor(0, 80);
   tft.printf("%d/%d   %d%%", downloaded, total, percent);
@@ -72,6 +73,9 @@ void draw_lcd(uint8_t step, const char *txt)
   tft.setTextSize(1);
   tft.setCursor(0, 20);
   tft.printf("IP: %s", gprs_ip.c_str());
+  tft.setTextSize(2);
+  tft.setCursor(180, 0);
+  tft.printf("% 3d", gprs_signal);
 }
 
 void start_lcd()
@@ -120,10 +124,24 @@ void loop()
       Serial.println("Testing modem SIMCARD faild\r\n");
       continue;
     }
-    if (!modem.isGprsConnected())
+
+    gprs_signal = modem.getSignalQuality();
+    Serial.printf("Signal:%d\r\n\r\n", gprs_signal);
+
+    if (gprs_signal > 10)
     {
-      Serial.println("Testing modem internet faild. Try to connect ...\r\n");
-      modem.gprsConnect("irancell");
+      draw_lcd(1, "Connecting");
+
+      if (!modem.isGprsConnected())
+      {
+        Serial.println("Testing modem internet faild. Try to connect ...\r\n");
+        modem.gprsConnect("irancell");
+        continue;
+      }
+    }
+    else
+    {
+      draw_lcd(1, "Bad Sig.");
       continue;
     }
 
