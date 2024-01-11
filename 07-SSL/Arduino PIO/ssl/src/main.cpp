@@ -37,8 +37,6 @@ void setup()
 
   otd_log_i("WiFi connected %s", WiFi.localIP().toString().c_str());
   OTADRIVE.setInfo(APIKEY, FW_VER);
-  OTADRIVE.setChipId("AABBCCDD");
-  // enable SSL secure connection
   // enable SSL secure connection
   OTADRIVE.useSSL(true);
 }
