@@ -33,13 +33,20 @@ void printInfo()
 
 void update_prgs(size_t downloaded, size_t total)
 {
-  // LCD Resolution: 135 x 240
+  // ignore unnecessary prints
+  static int last_percent = -1;
   int percent = downloaded / (total / 100 + 1);
+  if (last_percent == percent)
+    return;
+  
+  // LCD Resolution: 135 x 240
+  last_percent = percent;
   Serial.printf("upgrade %d/%d  %d%%\r\n\r\n", downloaded, total, percent);
 
   tft.setTextSize(2);
   tft.setCursor(0, 80);
   tft.printf("%d/%d   %d%%", downloaded, total, percent);
+  tft.fillRect(1, 101, 238, 8, TFT_BLACK);
   tft.fillRect(0, 100, percent * 2.4, 10, TFT_GREEN);
   tft.drawRect(0, 100, 240, 10, TFT_GREEN);
 }
