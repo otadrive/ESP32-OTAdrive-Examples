@@ -1,0 +1,14 @@
+menu "OTAdrive Configuration"
+
+    config CONFIG_OTADRIVE_HTTPS
+        bool "Use HTTPS"
+        default y
+        help
+            Connect to the OTAdrive through SSL
+
+    config CONFIG_OTADRIVE_MD5
+        bool "Use MD5 checksum matcher"
+        default y
+        help
+            This mechanism is used by the OTAdrive library as the default strategy. In this mechanism, The version number is ignored and the library starts to update if the MD5 checksum of the device's firmware is different from the MD5 checksum of the firmware that is set to the device's group belongs. That means if every single byte of the firmware changes, the library detects it and starts to download the firmware from the OTAdrive.
+endmenu
