@@ -72,15 +72,22 @@ static void otadrive_event_handler(void *arg, esp_event_base_t event_base,
     }
 }
 
-void otadrive_test(void *pvParameter)
+void otadrive_thread(void *pvParameter)
 {
     esp_event_handler_register(OTADRIVE_EVENTS, ESP_EVENT_ANY_ID, &otadrive_event_handler, NULL); // Register a handler to get updates on progress
     otadrive_setInfo(OTADRIVE_APIKEY, APP_VERSION);
 
     while (1)
     {
-        if (otadrive_timeTick(60))
+        if (otadrive_timeTick(30))
         {
+            ESP_LOGI(TAG, "FreeHeap %lu,MinHeap %luBytes. IDF Version %s",
+                     esp_get_free_heap_size(), esp_get_minimum_free_heap_size(), esp_get_idf_version());
+            getConfigValues();
+            char bbb[32];
+            getConfigValue("alarm.msg1", bbb, 32);
+            ESP_LOGI(TAG, "alarm.msg1 is %s", bbb);
+
             otadrive_result r = otadrive_updateFirmwareInfo();
             ESP_LOGI(TAG, "RES %d,%lu", r.code, r.available_size);
             if (r.code == OTADRIVE_NewFirmwareExists)
@@ -96,7 +103,7 @@ void otadrive_test(void *pvParameter)
 
 void app_main(void)
 {
-    ESP_LOGI(TAG, "app_main start");
+    ESP_LOGI(TAG, "app simple_fota start");
     // Initialize NVS.
     esp_err_t err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND)
@@ -112,7 +119,7 @@ void app_main(void)
     esp_wifi_set_ps(WIFI_PS_NONE);
     ESP_ERROR_CHECK(example_wifi_connect());
 
-    xTaskCreate(&otadrive_test, "otadrive_example_task", 1024 * 16, NULL, 5, NULL);
+    xTaskCreate(&otadrive_thread, "otadrive_example_task", 1024 * 16, NULL, 5, NULL);
 }
 
 // ========================== Wifi section

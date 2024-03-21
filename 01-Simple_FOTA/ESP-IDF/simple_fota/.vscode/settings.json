@@ -2,5 +2,12 @@
   "C_Cpp.intelliSenseEngine": "default",
   "idf.adapterTargetName": "esp32",
   "idf.portWin": "COM4",
-  "idf.flashType": "UART"
+  "idf.flashType": "UART",
+  "files.associations": {
+    "esp_event.h": "c",
+    "string.h": "c",
+    "charconv": "c",
+    "error.h": "c",
+    "esp_err.h": "c"
+  }
 }
