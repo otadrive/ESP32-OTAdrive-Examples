@@ -62,8 +62,7 @@ extern "C"
     char *otadrive_currentversion();
     char *otadrive_getChipId();
     bool otadrive_timeTick(uint16_t seconds);
-    bool getJsonConfigs(char *json);
-    bool getConfigValues();
+    bool downloadConfigValues();
     bool getConfigValue(char *key, char *o_value, int o_maxlen);
 
     /**

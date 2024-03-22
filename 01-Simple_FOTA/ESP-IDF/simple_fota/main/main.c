@@ -83,7 +83,7 @@ void otadrive_thread(void *pvParameter)
         {
             ESP_LOGI(TAG, "FreeHeap %lu,MinHeap %luBytes. IDF Version %s",
                      esp_get_free_heap_size(), esp_get_minimum_free_heap_size(), esp_get_idf_version());
-            getConfigValues();
+            downloadConfigValues();
             char bbb[32];
             getConfigValue("alarm.msg1", bbb, 32);
             ESP_LOGI(TAG, "alarm.msg1 is %s", bbb);

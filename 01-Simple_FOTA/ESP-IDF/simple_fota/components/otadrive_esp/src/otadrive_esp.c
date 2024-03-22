@@ -176,7 +176,7 @@ bool getJsonConfigs(char *json)
 static char *config_buffer = NULL;
 static size_t config_buffer_size = 0;
 otadrive_config_item *o_items = NULL;
-bool getConfigValues()
+bool downloadConfigValues()
 {
     if (xSemaphoreTake(otadrv_lock, pdMS_TO_TICKS(1000)) != pdPASS)
     {
@@ -260,8 +260,19 @@ bool getConfigValue(char *key, char *o_value, int o_maxlen)
         o_value[o_maxlen - 1] = '\0';
         for (uint32_t io = 0; io < o_maxlen - 1; io++, j++)
         {
-            ESP_LOGI(TAG, "index %lu %c", j, config_buffer[j]);
-            if (config_buffer[j] == '\n')
+            if (config_buffer[j] == '\\' && config_buffer[j + 1] == 'n')
+            {
+                o_value[io] = '\n';
+                j++;
+                continue;
+            }
+            else if (config_buffer[j] == '\\' && config_buffer[j + 1] == 'r')
+            {
+                o_value[io] = '\r';
+                j++;
+                continue;
+            }
+            else if (config_buffer[j] == '\n')
             {
                 o_value[io] = '\0';
                 return true;
