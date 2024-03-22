@@ -8,6 +8,27 @@
     "string.h": "c",
     "charconv": "c",
     "error.h": "c",
-    "esp_err.h": "c"
+    "esp_err.h": "c",
+    "freertos.h": "c",
+    "common.h": "c",
+    "privates.h": "c",
+    "stdlib.h": "c",
+    "task.h": "c",
+    "esp_http_client.h": "c",
+    "otadrive_esp.h": "c",
+    "esp_mac.h": "c",
+    "chrono": "c",
+    "otd_privates.h": "c",
+    "otd_common.h": "c",
+    "bitset": "c",
+    "string_view": "c",
+    "regex": "c",
+    "esp_rom_spiflash.h": "c",
+    "esp_rom_spiflash_defs.h": "c",
+    "esp_partition.h": "c",
+    "array": "c",
+    "format": "c",
+    "initializer_list": "c",
+    "span": "c"
   }
 }

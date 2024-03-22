@@ -1,8 +1,10 @@
-#pragma once
+#ifndef _OTD_DRIVE_H_
+#define _OTD_DRIVE_H_
 
 #include <esp_err.h>
 #include <esp_event.h>
 #include <string.h>
+#include "otd_cert.h"
 
 #define CONFIG_OTADRIVE_VER_LEN 32
 
@@ -50,18 +52,13 @@ extern "C"
         int32_t available_size;
     } otadrive_result;
 
-    typedef struct otadrive_config_item
-    {
-        char *name;
-        char *value;
-    } otadrive_config_item;
-
     void otadrive_setInfo(char *apiKey, char *current_version);
     otadrive_result otadrive_updateFirmwareInfo();
     otadrive_result otadrive_updateFirmware();
     char *otadrive_currentversion();
     char *otadrive_getChipId();
     bool otadrive_timeTick(uint16_t seconds);
+
     bool downloadConfigValues();
     bool getConfigValue(char *key, char *o_value, int o_maxlen);
 
@@ -75,4 +72,5 @@ extern "C"
 
 #ifdef __cplusplus
 }
+#endif
 #endif
