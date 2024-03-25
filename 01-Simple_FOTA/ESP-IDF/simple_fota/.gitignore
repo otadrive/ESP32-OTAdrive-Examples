@@ -53,9 +53,11 @@ dkms.conf
 
 #idf files
 build/
+dist/
 dependencies.lock
 sdkconfig
 docs/build
 docs/latex
+managed_components/
 *~
 

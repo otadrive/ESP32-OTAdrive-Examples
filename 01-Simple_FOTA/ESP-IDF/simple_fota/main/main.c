@@ -94,7 +94,15 @@ void otadrive_thread(void *pvParameter)
             {
                 ESP_LOGI(TAG, "Lets download new firmware %s,%luBytes. Current firmware is %s",
                          r.available_version, r.available_size, otadrive_currentversion());
-                otadrive_updateFirmware();
+
+                r = otadrive_updateFirmware(false);
+                if(r.code == OTADRIVE_Success)
+                {
+                    // do something to prepare device for reboot
+                    esp_restart();
+                }
+
+                ESP_LOGI(TAG, "OTA Download Result %d", r.code);
             }
         }
         vTaskDelay(pdMS_TO_TICKS(1000));
