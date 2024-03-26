@@ -1,0 +1,7 @@
+## IDF Component Manager Manifest File
+dependencies:
+  OTAdrive/otadrive_esp:
+    version: '2.0.5'
+  ## Required IDF version
+  idf:
+    version: ">=4.4.0"
