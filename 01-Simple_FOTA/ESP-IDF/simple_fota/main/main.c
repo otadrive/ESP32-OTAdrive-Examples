@@ -24,8 +24,8 @@ static const char *TAG = "otadrive_idf_example";
 #define WIFI_PASS "@tadr!ve"
 
 // ===== OTAdrive configurations
-#define OTADRIVE_APIKEY "5ec34eab-c516-496d-8cb0-78dc4744af3b"
-#define APP_VERSION "v@2.1.1.0"
+#define OTADRIVE_APIKEY "bd076abe-a423-4880-85b3-4367d07c8eda"
+#define APP_VERSION "v@2.2.1.5"
 
 static esp_netif_t *s_example_sta_netif = NULL;
 static SemaphoreHandle_t s_semph_get_ip_addrs = NULL;
@@ -74,22 +74,12 @@ static void otadrive_event_handler(void *arg, esp_event_base_t event_base,
 
 void otadrive_thread(void *pvParameter)
 {
-    esp_event_handler_register(OTADRIVE_EVENTS, ESP_EVENT_ANY_ID, &otadrive_event_handler, NULL); // Register a handler to get updates on progress
-    otadrive_setInfo(OTADRIVE_APIKEY, APP_VERSION);
-
     while (1)
     {
         if (otadrive_timeTick(30))
         {
-            ESP_LOGI(TAG, "FreeHeap %lu,MinHeap %luBytes. IDF Version %s",
-                     esp_get_free_heap_size(), esp_get_minimum_free_heap_size(), esp_get_idf_version());
-            downloadConfigValues();
-            char bbb[32];
-            getConfigValue("alarm.msg1", bbb, 32);
-            ESP_LOGI(TAG, "alarm.msg1 is %s", bbb);
-
             otadrive_result r = otadrive_updateFirmwareInfo();
-            ESP_LOGI(TAG, "RES %d,%lu", r.code, r.available_size);
+            ESP_LOGI(TAG, "Check new OTA result %d,%lu", r.code, r.available_size);
             if (r.code == OTADRIVE_NewFirmwareExists)
             {
                 ESP_LOGI(TAG, "Lets download new firmware %s,%luBytes. Current firmware is %s",
@@ -126,6 +116,10 @@ void app_main(void)
 
     esp_wifi_set_ps(WIFI_PS_NONE);
     ESP_ERROR_CHECK(example_wifi_connect());
+
+    // OTAdrive initialize
+    esp_event_handler_register(OTADRIVE_EVENTS, ESP_EVENT_ANY_ID, &otadrive_event_handler, NULL); // Register a handler to get updates on progress
+    otadrive_setInfo(OTADRIVE_APIKEY, APP_VERSION);
 
     xTaskCreate(&otadrive_thread, "otadrive_example_task", 1024 * 16, NULL, 5, NULL);
 }
