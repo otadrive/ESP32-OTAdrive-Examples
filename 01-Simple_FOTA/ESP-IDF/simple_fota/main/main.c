@@ -79,11 +79,11 @@ void otadrive_thread(void *pvParameter)
         if (otadrive_timeTick(30))
         {
             otadrive_result r = otadrive_updateFirmwareInfo();
-            ESP_LOGI(TAG, "Check new OTA result %d,%lu", r.code, r.available_size);
-            if (r.code == OTADRIVE_NewFirmwareExists)
+            ESP_LOGI(TAG, "Check new OTA result %d,%lu", r.code, r.size);
+            if (r.available)
             {
                 ESP_LOGI(TAG, "Lets download new firmware %s,%luBytes. Current firmware is %s",
-                         r.available_version, r.available_size, otadrive_currentversion());
+                         r.version, r.size, otadrive_currentversion());
 
                 r = otadrive_updateFirmware(false);
                 if(r.code == OTADRIVE_Success)
